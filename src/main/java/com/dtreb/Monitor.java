@@ -39,6 +39,7 @@ public class Monitor {
         // Initialize local spark for available amount of processors/cores
         SparkConf config = new SparkConf()
                 .setMaster("local[" + Runtime.getRuntime().availableProcessors() + "]")
+                // we need to define at least 512Mb it or Spark will complain on start
                 .set("spark.driver.memory", "1g")
                 .setAppName("FolderMonitor");
         Duration duration = new Duration(interval * 1000);
