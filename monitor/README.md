@@ -1,0 +1,1 @@
+You should **move** new files to this folder so that Spark can check them.
