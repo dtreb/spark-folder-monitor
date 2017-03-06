@@ -4,6 +4,7 @@ import com.dtreb.util.ParametersUtils;
 import com.dtreb.util.SparkUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.streaming.Duration;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaPairDStream;
@@ -52,6 +53,9 @@ public class Monitor {
         // Words count
         topWordsCount(stream, count);
 
+        // Longest line
+        longestLine(stream);
+
         // Start streaming
         context.start();
 
@@ -60,7 +64,7 @@ public class Monitor {
     }
 
     /**
-     * Prints words count for stream (text files in specified local folder)
+     * Prints words count for stream (text files in specified local folder).
      * @param stream {@link JavaDStream}
      */
     private static void topWordsCount(JavaDStream<String> stream, final int count) {
@@ -76,6 +80,25 @@ public class Monitor {
         wordCounts.foreachRDD((stringIntegerJavaPairRDD, time) -> {
             for (Tuple2<String, Integer> tuple : stringIntegerJavaPairRDD.top(count, new SparkUtils.MyTupleComparator())) {
                 System.out.println("Word: \"" + tuple._1() + "\", Count: " + tuple._2());
+            }
+        });
+    }
+
+    /**
+     * Prints longest line of text.
+     * @param stream {@link JavaDStream}
+     */
+    private static void longestLine(JavaDStream<String> stream) {
+        // Map lines by length
+        JavaDStream<Integer> lengths = stream.map(line -> line.length());
+        // Find longest one
+        JavaDStream<Integer> length = lengths.reduce((Function2<Integer, Integer, Integer>) (a, b) -> {
+            if (a > b) return a; else return b;
+        });
+        // Display length
+        length.foreachRDD((rdd, time) -> {
+            if (!rdd.isEmpty()) {
+                System.out.println("The longest line: " + rdd.take(1) + " chars.");
             }
         });
     }
