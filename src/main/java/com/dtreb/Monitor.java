@@ -4,7 +4,6 @@ import com.dtreb.util.ParametersUtils;
 import com.dtreb.util.SparkUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.streaming.Duration;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaPairDStream;
@@ -92,9 +91,7 @@ public class Monitor {
         // Map lines by length
         JavaDStream<Integer> lengths = stream.map(line -> line.length());
         // Find longest one
-        JavaDStream<Integer> length = lengths.reduce((Function2<Integer, Integer, Integer>) (a, b) -> {
-            if (a > b) return a; else return b;
-        });
+        JavaDStream<Integer> length = lengths.reduce((a, b) -> (a > b) ? a : b);
         // Display length
         length.foreachRDD((rdd, time) -> {
             if (!rdd.isEmpty()) {
