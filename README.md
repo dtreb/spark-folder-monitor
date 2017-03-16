@@ -1,13 +1,13 @@
-#Spark streaming as folder monitor
+# Spark streaming as folder monitor
 
-###Info
+### Info
 This is an example that demonstrates usage of:
 
  1. [Spark streaming](http://spark.apache.org/streaming/) and embedded Spark instance.   
  2. Different spark data analysis approaches.        
  3. [Commons CLI](https://commons.apache.org/proper/commons-cli/) to parse parameters.   
 
-###Run
+### Run
 
  1. Build project with ```$ mvn package```.   
  2. Locate created **spark-folder-monitor-xxx-jar-with-dependencies.jar** in target folder.
