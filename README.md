@@ -1,4 +1,4 @@
-# Spark streaming as folder monitor
+# Spark streaming usage to monitor local folder
 
 ### Info
 This is an example that demonstrates usage of:
